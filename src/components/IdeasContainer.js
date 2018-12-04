@@ -80,14 +80,16 @@ class IdeasContainer extends Component {
   render() {
     return (
       <div>
-        <div>
+        <div className="buttonContainer">
           <button className="newIdeaButton" onClick={this.addNewIdea} >
             New Idea
           </button>
+          <br></br>
           <span className="notification">
             {this.state.notification}
           </span>
         </div>
+        <div className="tileContainer">
         {this.state.ideas.map((idea) => {
           if(this.state.editingIdeaId === idea.id) {
             return(<IdeaForm idea={idea} key={idea.id}
@@ -100,6 +102,7 @@ class IdeasContainer extends Component {
               onDelete={this.deleteIdea} />)
           }
         })}
+        </div>
       </div>
       );
   }
