@@ -9,7 +9,8 @@ class IdeasContainer extends Component {
     super(props)
     this.state = {
       ideas: [],
-      editingIdeaId: null
+      editingIdeaId: null,
+      notification: ''
     }
   }
 
@@ -45,6 +46,25 @@ class IdeasContainer extends Component {
     .catch(error => console.log(error))
   }
 
+  updateIdea = (idea) => {
+    const ideaIndex = this.state.ideas.findIndex(x => x.id === idea.id)
+    const ideas = update(this.state.ideas, {
+      [ideaIndex]: { $set: idea }
+    })
+    this.setState({
+      ideas: ideas,
+      notification: 'All changes saved'
+    })
+  }
+
+  resetNotification = () => {
+    this.setState({notification: ''})
+  }
+
+  enableEditing = (id) => {
+    this.setState({editingIdeaId: id},
+      () => { this.title.focus() })
+  }
 
   render() {
     return (
@@ -53,12 +73,18 @@ class IdeasContainer extends Component {
           <button className="newIdeaButton" onClick={this.addNewIdea} >
             New Idea
           </button>
+          <span className="notification">
+            {this.state.notification}
+          </span>
         </div>
         {this.state.ideas.map((idea) => {
           if(this.state.editingIdeaId === idea.id) {
-            return(<IdeaForm idea={idea} key={idea.id} />)
+            return(<IdeaForm idea={idea} key={idea.id}
+              updateIdea={this.updateIdea}
+              titleRef={input => this.title = input}
+              resetNotification={this.resetNotification} />)
           } else {
-          return(<Idea idea={idea} key={idea.id} />)
+          return(<Idea idea={idea} key={idea.id} onClick={this.enableEditing} />)
           }
         })}
       </div>
